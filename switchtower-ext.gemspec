@@ -1,10 +1,12 @@
+require './lib/switchtower/ext/version'
+
 Gem::Specification.new do |s|
 
   s.name = 'switchtower-ext'
-  s.version = "0.0.1"
+  s.version = PKG_VERSION
   s.platform = Gem::Platform::RUBY
   s.summary = <<-DESC.strip.gsub(/\n/, " ")
-    SwitchTower Extensions are a set of useful task libraries and methods that
+    SwitchTower Extensions is a set of useful task libraries and methods that
     other developers may reference in their own recipe files.
   DESC
 
