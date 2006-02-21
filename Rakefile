@@ -18,6 +18,7 @@ Rake::GemPackageTask.new(GEM_SPEC) do |p|
   p.gem_spec = GEM_SPEC
   p.need_tar = true
   p.need_zip = true
+  p.package_files.include 'README', 'MIT-LICENSE', 'setup.rb'
 end
 
 desc "Build the RDoc API documentation"
