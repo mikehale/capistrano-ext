@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   DESC
 
   s.files = Dir.glob("lib/**/*")
+  s.files << 'ChangeLog' << 'README' << 'MIT-LICENSE'
   s.require_path = 'lib'
 
   s.add_dependency 'switchtower', ">= 1.0.0"

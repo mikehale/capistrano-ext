@@ -44,6 +44,16 @@ module MonitorServers
     puts
   end
 
+  # Get a value from the remote environment
+  def remote_env(value)
+    result = ""
+    run("echo $#{value}", :once => true) do |ch, stream, data|
+      raise "could not get environment variable #{value}: #{data}" if stream == :err
+      result << data
+    end
+    result.chomp
+  end
+
   # Monitor the load of the servers tied to the current task.
   def load(options={})
     servers = current_task.servers.sort
@@ -117,22 +127,23 @@ module MonitorServers
     minute_5 = 300 / sample_size
     minute_15 = 900 / sample_size
 
+    # store our helper script on the servers. This script reduces the amount
+    # of traffic caused by tailing busy logs across the network, and also reduces
+    # the amount of work the client has to do.
+    script = "#{remote_env("HOME")}/x-request-counter.rb"
+    put_asset "request-counter.rb", script
+
     # set up (but don't start) the runner thread, which accumulates request
     # counts from the servers.
     runner = Thread.new do Thread.stop
       running = true
-      run("echo 0 && tail -F #{logs.join(" ")} | ruby /tmp/request-counter.rb '#{request_pattern}'") do |ch, stream, out|
+      run("echo 0 && tail -F #{logs.join(" ")} | ruby #{script} '#{request_pattern}'") do |ch, stream, out|
         channels[ch[:host]] ||= ch
         puts "#{ch[:host]}: #{out}" and break if stream == :err
         mutex.synchronize { count[ch[:host]] += out.to_i }
       end
       running = false
     end
-
-    # store our helper script on the servers. This script reduces the amount
-    # of traffic caused by tailing busy logs across the network, and also reduces
-    # the amount of work the client has to do.
-    put_asset "request-counter.rb", "/tmp/request-counter.rb"
 
     # let the runner thread get started
     runner.wakeup
