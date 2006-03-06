@@ -5,11 +5,11 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/contrib/rubyforgepublisher'
 
-require "./lib/switchtower/ext/version"
+require "./lib/capistrano/ext/version"
 
-PKG_NAME      = "switchtower-ext"
+PKG_NAME      = "capistrano-ext"
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-PKG_VERSION   = SwitchTower::Ext::Version::STRING + PKG_BUILD
+PKG_VERSION   = Capistrano::Ext::Version::STRING + PKG_BUILD
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 
 GEM_SPEC = eval(File.read("#{File.dirname(__FILE__)}/#{PKG_NAME}.gemspec"))
@@ -24,7 +24,7 @@ end
 desc "Build the RDoc API documentation"
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = "doc"
-  rdoc.title    = "SwitchTower Extensions -- A collection of tasks and methods for switchtower"
+  rdoc.title    = "Capistrano Extensions -- A collection of tasks and methods for capistrano"
   rdoc.options << '--line-numbers --inline-source --main README'
   rdoc.rdoc_files.include 'README'
   rdoc.rdoc_files.include 'lib/**/*.rb'

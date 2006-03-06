@@ -1,3 +1,5 @@
 *1.0.1* *SVN*
 
+* Rename capistrano-ext
+
 * Put request monitor script in user's home directory, instead of /tmp, to accomodate multiple users
