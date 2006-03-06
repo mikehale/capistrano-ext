@@ -1,4 +1,4 @@
-module SwitchTower
+module Capistrano
   module Ext
     module Version #:nodoc:
       MAJOR = 1

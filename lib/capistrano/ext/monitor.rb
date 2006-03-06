@@ -1,4 +1,4 @@
-require 'switchtower'
+require 'capistrano'
 require 'thread'
 
 module MonitorServers
@@ -227,9 +227,9 @@ module MonitorServers
   end
 end
 
-SwitchTower.plugin :monitor, MonitorServers
+Capistrano.plugin :monitor, MonitorServers
 
-SwitchTower.configuration(:must_exist).load do
+Capistrano.configuration(:must_exist).load do
 desc <<-STR
 Watch the load on the servers. Display is updated every 30 seconds by default,
 though you can specify a DELAY environment variable to make it update more or
