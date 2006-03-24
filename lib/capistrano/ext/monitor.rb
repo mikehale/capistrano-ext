@@ -36,8 +36,9 @@ module MonitorServers
         print header * size, "  "
       else
         print header
-        padding = size - header.length - 1
-        print " ", "-" * padding if padding > 0
+        padding = size - header.length
+        print " " if padding > 0
+        print "-" * (padding - 1) if padding > 1
         print "  "
       end
     end
@@ -57,14 +58,14 @@ module MonitorServers
   # Monitor the load of the servers tied to the current task.
   def load(options={})
     servers = current_task.servers.sort
-    names = servers.map { |s| s.match(/^(\w+)/)[1] }
+    names = servers.map { |s| s.match(/^([^.]+)/)[1] }
     time = date_column(:init)
     load_column_width = "0.00".length * 3 + 2
 
     puts "connecting..."
     connect!
 
-    parser = Proc.new { |text| text.match(/averages: (.*)$/)[1].split(/, /) }
+    parser = Proc.new { |text| text.match(/average.*: (.*)$/)[1].split(/, /) }
     delay = (options[:delay] || 30).to_i
 
     running = true
