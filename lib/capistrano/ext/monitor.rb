@@ -226,6 +226,63 @@ module MonitorServers
   def put_asset(name, to)
     put(File.read("#{File.dirname(__FILE__)}/assets/#{name}"), to)
   end
+
+  def uptime
+    results = {}
+
+    puts "querying servers..."
+    run "uptime" do |ch, stream, out|
+      if stream == :err
+        results[ch[:host]] = { :error => "error: #{out.strip}" }
+      else
+        if out.strip =~ /(\S+)\s+up\s+(.*?),\s+(\d+) users?,\s+load averages?: (.*)/
+          time   = $1
+          uptime = $2
+          users  = $3
+          loads  = $4
+
+          results[ch[:host]] = { :uptime => uptime.strip.gsub(/  +/, " "),
+                                 :loads  => loads,
+                                 :users  => users,
+                                 :time   => time }
+        else
+          results[ch[:host]] = { :error => "unknown uptime format: #{out.strip}" }
+        end
+      end
+    end
+
+    longest_hostname = results.keys.map { |k| k.length }.max
+    longest_uptime = results.values.map { |v| (v[:uptime] || "").length }.max
+
+    by_role = {}
+    roles.each do |name, list|
+      by_role[name] = {}
+      list.each do |role|
+        next unless results[role.host]
+        by_role[name][role.host] = results.delete(role.host)
+      end
+    end
+
+    by_role[:zzz] = results unless results.empty?
+
+    add_newline = false
+    by_role.keys.sort_by { |k| k.to_s }.each do |role|
+      results = by_role[role]
+      next if results.empty?
+
+      puts "\n" if add_newline
+      add_newline = true
+
+      results.keys.sort.each do |server|
+        print "[%-*s] " % [longest_hostname, server]
+        if results[server][:error]
+          puts results[server][:error]
+        else
+          puts "up %*s, load %s" % [longest_uptime, results[server][:uptime], results[server][:loads]]
+        end
+      end
+    end
+  end
 end
 
 Capistrano.plugin :monitor, MonitorServers
@@ -247,5 +304,13 @@ else, you can specify it in the log_name variable.
 STR
 task :watch_requests, :roles => :app do
   monitor.requests_per_second("#{shared_path}/log/#{self[:log_name] || "production.log"}")
+end
+
+desc <<-STR
+Display the current uptime and load for all servers, nicely formatted with
+columns all lined up for easy scanning.
+STR
+task :uptime do
+  monitor.uptime
 end
 end

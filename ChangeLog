@@ -1,5 +1,7 @@
 *SVN*
 
+* Add uptime task [Jamis Buck]
+
 * Fix padding on long machine names [Michael Schoen]
 
 * Fix matching of machine names [Michael Schoen]
