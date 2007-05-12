@@ -1,3 +1,8 @@
+*1.1.1* (May 12, 2007)
+
+* Tweak to work with Capistrano 2 [Jamis Buck]
+
+
 *1.1.0* (September 14, 2006)
 
 * Add uptime task [Jamis Buck]

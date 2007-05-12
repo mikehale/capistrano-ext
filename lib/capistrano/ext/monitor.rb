@@ -287,7 +287,11 @@ end
 
 Capistrano.plugin :monitor, MonitorServers
 
-Capistrano.configuration(:must_exist).load do
+configuration = Capistrano::Configuration.respond_to?(:instance) ?
+  Capistrano::Configuration.instance(:must_exist) :
+  Capistrano.configuration(:must_exist)
+
+configuration.load do
 desc <<-STR
 Watch the load on the servers. Display is updated every 30 seconds by default,
 though you can specify a DELAY environment variable to make it update more or
