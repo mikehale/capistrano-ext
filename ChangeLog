@@ -1,3 +1,8 @@
+*1.2.0* (July 6, 2007)
+
+* Added multistage as a packaged staging option. [Jamis Buck]
+
+
 *1.1.1* (May 12, 2007)
 
 * Tweak to work with Capistrano 2 [Jamis Buck]
