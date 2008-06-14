@@ -45,5 +45,5 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  on :start, "multistage:ensure", :except => stages
+  on :start, "multistage:ensure", :except => stages + ['multistage:prepare']
 end

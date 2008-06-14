@@ -1,7 +1,8 @@
 == unreleased
 
+* Exclude multistage:prepare from the multistage:ensure check [Matt Sanders]
 * Don't clobber pre-existing stage definitions on
-  multistage:prepare [Jamis Buck]
+  multistage:prepare [Matt Sanders]
 * Made multistage module autodetect stages. [Jamis Buck]
 
 
