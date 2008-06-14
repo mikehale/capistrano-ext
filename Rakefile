@@ -1,32 +1,25 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
+begin
+  require 'echoe'
+rescue LoadError
+  abort "You'll need to have `echoe' installed to use capistrano-ext's Rakefile"
+end
 
 require "./lib/capistrano/ext/version"
 
-PKG_NAME      = "capistrano-ext"
-PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-PKG_VERSION   = Capistrano::Ext::Version::STRING + PKG_BUILD
-PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
-
-GEM_SPEC = eval(File.read("#{File.dirname(__FILE__)}/#{PKG_NAME}.gemspec"))
-
-Rake::GemPackageTask.new(GEM_SPEC) do |p|
-  p.gem_spec = GEM_SPEC
-  p.need_tar = true
-  p.need_zip = true
-  p.package_files.include 'README', 'MIT-LICENSE', 'setup.rb', 'ChangeLog'
+version = Capistrano::Ext::Version::STRING.dup
+if ENV['SNAPSHOT'].to_i == 1
+  version << "." << Time.now.utc.strftime("%Y%m%d%H%M%S")
 end
 
-desc "Build the RDoc API documentation"
-Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = "doc"
-  rdoc.title    = "Capistrano Extensions -- A collection of tasks and methods for capistrano"
-  rdoc.options << '--line-numbers --inline-source --main README'
-  rdoc.rdoc_files.include 'README'
-  rdoc.rdoc_files.include 'lib/**/*.rb'
-  rdoc.template = "jamis"
+Echoe.new('capistrano-ext', version) do |p|
+  p.changelog        = "CHANGELOG.rdoc"
+
+  p.author           = "Jamis Buck"
+  p.email            = "jamis@jamisbuck.org"
+  p.summary          = "Useful task libraries and methods for Capistrano"
+  p.url              = "http://www.capify.org"
+
+  p.need_zip         = true
+
+  p.dependencies     = ["capistrano >=1.0.0"]
 end
