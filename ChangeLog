@@ -1,5 +1,7 @@
 *unreleased*
 
+* Don't clobber pre-existing stage definitions on multistage:prepare [Jamis Buck]
+
 * Made multistage module autodetect stages. [Jamis Buck]
 
 

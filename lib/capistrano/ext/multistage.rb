@@ -34,9 +34,12 @@ Capistrano::Configuration.instance.load do
     task :prepare do
       FileUtils.mkdir_p(location)
       stages.each do |name|
-        File.open("#{location}/#{name}.rb", "w") do |f|
-          f.puts "# #{name.upcase}-specific deployment configuration"
-          f.puts "# please put general deployment config in config/deploy.rb"
+        file = File.join(location, name + ".rb")
+        unless File.exists?(file)
+          File.open(file, "w") do |f|
+            f.puts "# #{name.upcase}-specific deployment configuration"
+            f.puts "# please put general deployment config in config/deploy.rb"
+          end
         end
       end
     end
