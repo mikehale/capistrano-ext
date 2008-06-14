@@ -1,3 +1,8 @@
+*unreleased*
+
+* Made multistage module autodetect stages. [Jamis Buck]
+
+
 *1.2.0* (July 6, 2007)
 
 * Added multistage as a packaged staging option. [Jamis Buck]

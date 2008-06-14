@@ -3,8 +3,11 @@ unless Capistrano::Configuration.respond_to?(:instance)
 end
 
 Capistrano::Configuration.instance.load do
-  stages = fetch(:stages, %w(staging production))
   location = fetch(:stage_dir, "config/deploy")
+
+  unless exists?(:stages)
+    set :stages, Dir["#{location}/*.rb"].map { |f| File.basename(f, ".rb") }
+  end
 
   stages.each do |name| 
     desc "Set the target stage to `#{name}'."
