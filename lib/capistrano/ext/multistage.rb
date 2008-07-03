@@ -17,6 +17,12 @@ Capistrano::Configuration.instance.load do
     end 
   end 
 
+  on :load do
+    unless stages.include?(ARGV.first) # don't need to do anything if stage was specified
+      find_and_execute_task(default_stage) if exists?(:default_stage)
+    end
+  end
+
   namespace :multistage do
     desc "[internal] Ensure that a stage has been selected."
     task :ensure do
