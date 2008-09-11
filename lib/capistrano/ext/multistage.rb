@@ -18,7 +18,11 @@ Capistrano::Configuration.instance.load do
   end 
 
   on :load do
-    unless stages.include?(ARGV.first) # don't need to do anything if stage was specified
+    if stages.include?(ARGV.first)
+      # Execute the specified stage so that recipes required in stage can contribute to task list
+      find_and_execute_task(ARGV.first) if ARGV.any?{ |option| option =~ /-T|--tasks|-e|--explain/ }
+    else
+      # Execute the default stage so that recipes required in stage can contribute tasks
       find_and_execute_task(default_stage) if exists?(:default_stage)
     end
   end
